@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>6 Years With You</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- FLOATING HEARTS BACKGROUND -->
+<div id="floatingHearts"></div>
+
+<!-- ========== INTRO SCREEN ========== -->
+<div id="introScreen">
+  <div class="intro-content">
+    <div class="intro-date">March 1, 2020 — March 1, 2026</div>
+    <h1 class="intro-title">Our Story</h1>
+    <p class="intro-subtitle">6 years of us, one heartbeat at a time</p>
+    <div class="intro-hearts">
+      <span>&#10084;</span><span>&#10084;</span><span>&#10084;</span>
+      <span>&#10084;</span><span>&#10084;</span><span>&#10084;</span>
+    </div>
+    <button id="startBtn" onclick="startGame()">Begin Our Journey</button>
+  </div>
+</div>
+
+<!-- ========== GAME SCREEN ========== -->
+<div id="gameScreen" class="hidden">
+
+  <!-- Progress Hearts -->
+  <div id="progressBar">
+    <div class="progress-heart" id="ph0">&#9825;</div>
+    <div class="progress-heart" id="ph1">&#9825;</div>
+    <div class="progress-heart" id="ph2">&#9825;</div>
+    <div class="progress-heart" id="ph3">&#9825;</div>
+    <div class="progress-heart" id="ph4">&#9825;</div>
+    <div class="progress-heart" id="ph5">&#9825;</div>
+  </div>
+
+  <h1 id="levelTitle">Year 1</h1>
+  <p id="levelHint" class="level-hint">Drag the heart to the memory</p>
+
+  <!-- Game Board -->
+  <div id="game">
+    <div id="player">&#10084;&#65039;</div>
+    <div id="memoryItem" class="memory">&#128140;</div>
+    <div id="trail"></div>
+  </div>
+
+  <!-- Drag hint for mobile -->
+  <p id="dragHint" class="drag-hint">Touch &amp; drag the &#10084;&#65039; to find the memory</p>
+</div>
+
+<!-- ========== YEAR POPUP ========== -->
+<div id="popup" class="hidden">
+  <div class="popup-overlay"></div>
+  <div class="popup-content">
+    <div class="popup-year" id="popupYear">Year 1</div>
+    <div class="popup-emoji" id="popupEmoji">&#128140;</div>
+    <p class="popup-message" id="yearMessage"></p>
+    <button class="popup-btn" onclick="closePopup()">Continue Our Story &#10084;&#65039;</button>
+  </div>
+</div>
+
+<!-- ========== FINAL SCREEN ========== -->
+<div id="finalScreen" class="hidden">
+  <canvas id="fireworks"></canvas>
+  <div class="final-content">
+    <div class="final-badge">6</div>
+    <h2 class="final-title">6 Years Completed</h2>
+    <div class="final-divider"></div>
+    <p class="final-letter">
+      From strangers... to soulmates.<br>
+      Through every laugh, every tear, every fight,<br>
+      every quiet moment and every adventure —<br>
+      <strong>I'd choose you again. Every single time.</strong>
+    </p>
+    <div class="final-forever">
+      <span class="forever-icon">&#128141;</span>
+      <span>Forever Mode Unlocked</span>
+    </div>
+    <p class="final-date">Happy 6th Anniversary, my love</p>
+    <p class="final-date-small">March 1, 2026</p>
+  </div>
+</div>
+
+<!-- AUDIO -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script src="script.js"></script>
+</body>
+</html>
