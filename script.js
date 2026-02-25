@@ -41,7 +41,7 @@ var yearData = [
     message: "We became each other's home.\nNot a place, but a feeling —\nsafe, warm, and always yours."
   },
   {
-    emoji: "\u2604\uFE0F",
+    emoji: "\uD83C\uDF3C",
     title: "Year 4",
     message: "We learned to love quietly too.\nIn silences, in small things,\nin just being next to each other."
   },
@@ -51,9 +51,9 @@ var yearData = [
     message: "We made ordinary days feel magical.\nEvery moment with you became\na memory I never want to forget."
   },
   {
-    emoji: "\uD83E\uDD0D",
+    emoji: "\uD83D\uDC9E",
     title: "Year 6",
-    message: "6 years later... I still get butterflies.\nYou're my best friend, my peace,\nand my favorite person in the whole world."
+    message: "6 years later... I still get butterflies.\nYou're my best friend, my peace,\nand my everything."
   }
 ];
 
