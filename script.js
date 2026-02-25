@@ -1,3 +1,137 @@
+// ===== BACKGROUND MUSIC (Web Audio API) =====
+var audioCtx = null;
+var musicPlaying = false;
+
+function createBackgroundMusic() {
+  if (musicPlaying) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  } catch (e) { return; }
+  musicPlaying = true;
+
+  // Master volume
+  var master = audioCtx.createGain();
+  master.gain.value = 0.30;
+  master.connect(audioCtx.destination);
+
+  // Warmth filter
+  var warmth = audioCtx.createBiquadFilter();
+  warmth.type = "lowpass";
+  warmth.frequency.value = 1100;
+  warmth.Q.value = 0.7;
+  warmth.connect(master);
+
+  // Delay for spaciousness
+  var dly = audioCtx.createDelay();
+  dly.delayTime.value = 0.45;
+  var fb = audioCtx.createGain();
+  fb.gain.value = 0.22;
+  dly.connect(fb);
+  fb.connect(dly);
+  fb.connect(master);
+  warmth.connect(dly);
+
+  // Frequencies
+  var C3=130.81,E3=164.81,G3=196.00,A3=220.00,B3=246.94;
+  var C4=261.63,D4=293.66,E4=329.63,F4=349.23,G4=392.00,A4=440.00;
+  var C5=523.25,D5=587.33,E5=659.25,G5=783.99;
+
+  // Chord progression: C - G - Am - F (romantic classic)
+  var chords = [
+    [C3, E3, G3],
+    [G3, B3, D4],
+    [A3, C4, E4],
+    [F4 * 0.5, A3, C4]
+  ];
+
+  var beat = 0.7;
+  var barLen = beat * 4;
+  var loopLen = barLen * 4;
+
+  // Arpeggio pattern per bar (beat offsets within a bar)
+  var arpPattern = [0, 1, 2, 2.5, 3, 3.5];
+
+  // Melody: gentle music-box notes (beat offsets from loop start)
+  var melodyNotes = [
+    { f: E5,  b: 0,    d: 1.8 },
+    { f: G5,  b: 2,    d: 0.9 },
+    { f: E5,  b: 3,    d: 0.9 },
+    { f: D5,  b: 4.5,  d: 1.5 },
+    { f: C5,  b: 6.5,  d: 1.3 },
+    { f: C5,  b: 8,    d: 1.0 },
+    { f: E5,  b: 9.5,  d: 1.5 },
+    { f: D5,  b: 12,   d: 1.0 },
+    { f: C5,  b: 13,   d: 0.8 },
+    { f: A4,  b: 14,   d: 1.8 }
+  ];
+
+  function playTone(freq, start, dur, vol, type) {
+    var osc = audioCtx.createOscillator();
+    osc.type = type || "sine";
+    osc.frequency.value = freq;
+    var g = audioCtx.createGain();
+    var atk = Math.min(0.15, dur * 0.15);
+    var rel = Math.min(0.4, dur * 0.3);
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(vol, start + atk);
+    g.gain.setValueAtTime(vol, start + dur - rel);
+    g.gain.linearRampToValueAtTime(0, start + dur);
+    osc.connect(g);
+    g.connect(warmth);
+    osc.start(start);
+    osc.stop(start + dur + 0.05);
+  }
+
+  function scheduleLoop(t) {
+    // Pad chords (warm sine layer)
+    for (var c = 0; c < chords.length; c++) {
+      var cs = t + c * barLen;
+      for (var n = 0; n < chords[c].length; n++) {
+        playTone(chords[c][n], cs, barLen, 0.07, "sine");
+        playTone(chords[c][n] * 2, cs, barLen, 0.025, "triangle");
+      }
+    }
+
+    // Arpeggios (music-box sparkle)
+    for (var c = 0; c < chords.length; c++) {
+      var chord = chords[c];
+      for (var a = 0; a < arpPattern.length; a++) {
+        var noteIdx = a % chord.length;
+        var arpFreq = chord[noteIdx] * 4; // two octaves up
+        var arpStart = t + c * barLen + arpPattern[a] * beat;
+        playTone(arpFreq, arpStart, beat * 0.6, 0.025, "sine");
+      }
+    }
+
+    // Melody
+    for (var m = 0; m < melodyNotes.length; m++) {
+      var mn = melodyNotes[m];
+      playTone(mn.f, t + mn.b * beat, mn.d * beat, 0.045, "sine");
+    }
+  }
+
+  var nextLoop = audioCtx.currentTime + 0.1;
+
+  function scheduler() {
+    if (!musicPlaying) return;
+    while (nextLoop < audioCtx.currentTime + loopLen * 2) {
+      scheduleLoop(nextLoop);
+      nextLoop += loopLen;
+    }
+    setTimeout(scheduler, 2000);
+  }
+
+  scheduler();
+}
+
+function stopBackgroundMusic() {
+  if (audioCtx) {
+    audioCtx.close();
+    audioCtx = null;
+    musicPlaying = false;
+  }
+}
+
 // ===== ELEMENTS =====
 var introScreen = document.getElementById("introScreen");
 var gameScreen = document.getElementById("gameScreen");
@@ -74,9 +208,8 @@ function startGame() {
   updateGameSize();
   placeMemory();
 
-  // Try to play music
-  var music = document.getElementById("bgMusic");
-  music.play().catch(function () {});
+  // Start procedural background music
+  createBackgroundMusic();
 }
 
 // ===== TOUCH DRAG =====
